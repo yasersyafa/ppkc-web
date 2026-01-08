@@ -10,17 +10,18 @@ import {
   Shield,
   Users,
   ArrowRight,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WasteReport } from "@/components/waste-report";
-import Image from "next/image";
+import { ReportTable } from "@/components/report-table";
+import { ReportProvider } from "@/lib/report-context";
 
-export default function HomePage() {
+function HomeContent() {
   const [showReport, setShowReport] = useState(false);
 
   if (showReport) {
-    console.log("Rendering WasteReport component");
-    return <WasteReport />;
+    return <WasteReport onComplete={() => setShowReport(false)} />;
   }
 
   return (
@@ -35,8 +36,10 @@ export default function HomePage() {
         {/* Navigation */}
         <nav className="relative z-10 flex items-center justify-between p-4 md:p-6 max-w-6xl mx-auto">
           <div className="flex items-center gap-2">
-            <Image src="/Logo.png" alt="PPKC Logo" width={50} height={50} />
-            <span className="text-xl font-bold text-foreground">PPK-C</span>
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+              <Leaf className="w-6 h-6 text-primary-foreground" />
+            </div>
+            <span className="text-xl font-bold text-foreground">EcoReport</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm">
             <a
@@ -46,16 +49,16 @@ export default function HomePage() {
               Fitur
             </a>
             <a
+              href="#laporan"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Laporan
+            </a>
+            <a
               href="#cara-kerja"
               className="text-muted-foreground hover:text-foreground transition-colors"
             >
               Cara Kerja
-            </a>
-            <a
-              href="#tentang"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Tentang
             </a>
           </div>
         </nav>
@@ -71,14 +74,14 @@ export default function HomePage() {
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight text-balance">
-                Bersama Wujudkan{" "}
-                <span className="text-primary">Ciputat Bersih</span> dan
-                <span className="text-[#E27149]"> Berkelanjutan.</span>
+                Jaga Lingkungan,{" "}
+                <span className="text-primary">Laporkan Sampah</span> Menumpuk
               </h1>
 
               <p className="text-lg text-muted-foreground max-w-lg text-pretty">
-                Platform digital untuk memilah, memantau, dan mengelola sampah
-                rumah tangga di wilayah Ciputat.
+                Bersama-sama kita wujudkan lingkungan bersih. Laporkan lokasi
+                sampah menumpuk dengan mudah dan cepat menggunakan fitur foto
+                dan lokasi otomatis.
               </p>
 
               {/* CTA Button */}
@@ -93,7 +96,7 @@ export default function HomePage() {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <p className="text-sm text-muted-foreground mt-3">
-                  ✓ Gratis &nbsp; ✓ Tanpa registrasi &nbsp; ✓ Proses cepat
+                  Gratis - Tanpa registrasi - Proses cepat
                 </p>
               </div>
             </div>
@@ -182,8 +185,40 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section id="laporan" className="py-16 md:py-24">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
+              <FileText className="w-4 h-4" />
+              Pantau Progress
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Daftar Laporan Masuk
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Lihat status terkini dari semua laporan sampah yang telah
+              dikirimkan oleh masyarakat
+            </p>
+          </div>
+
+          <ReportTable />
+
+          {/* CTA */}
+          <div className="text-center mt-10">
+            <Button
+              onClick={() => setShowReport(true)}
+              size="lg"
+              className="h-12 px-6 font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <Camera className="w-5 h-5 mr-2" />
+              Buat Laporan Baru
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* How It Works Section */}
-      <section id="cara-kerja" className="py-16 md:py-24">
+      <section id="cara-kerja" className="py-16 md:py-24 bg-secondary/30">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
@@ -237,18 +272,6 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-
-          {/* CTA */}
-          <div className="text-center mt-12">
-            <Button
-              onClick={() => setShowReport(true)}
-              size="lg"
-              className="h-14 px-8 text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <Camera className="w-5 h-5 mr-2" />
-              Lapor Sampah Menumpuk Sekarang!
-            </Button>
-          </div>
         </div>
       </section>
 
@@ -285,7 +308,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer id="tentang" className="py-12 bg-secondary/30">
+      <footer className="py-12 bg-secondary/30">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex items-center gap-2">
@@ -297,7 +320,7 @@ export default function HomePage() {
               </span>
             </div>
             <p className="text-muted-foreground text-sm text-center">
-              © 2025 EcoReport. Bersama menjaga lingkungan untuk generasi
+              2025 EcoReport. Bersama menjaga lingkungan untuk generasi
               mendatang.
             </p>
             <div className="flex items-center gap-4">
@@ -310,5 +333,13 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <ReportProvider>
+      <HomeContent />
+    </ReportProvider>
   );
 }
