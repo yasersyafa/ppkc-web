@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { Camera, RotateCcw, Check, X } from "lucide-react";
+import { Camera, RotateCcw, Check, X, SwitchCamera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface CameraCaptureProps {
@@ -12,59 +12,78 @@ interface CameraCaptureProps {
 export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [stream, setStream] = useState<MediaStream | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [facingMode, setFacingMode] = useState<"user" | "environment">(
     "environment"
   );
+  const [isCameraReady, setIsCameraReady] = useState(false);
 
-  const startCamera = useCallback(
-    async (facing: "user" | "environment") => {
-      try {
-        setIsLoading(true);
-        setError(null);
+  const startCamera = useCallback(async (facing: "user" | "environment") => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      setIsCameraReady(false);
 
-        if (stream) {
-          stream.getTracks().forEach((track) => track.stop());
-        }
-
-        const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: facing,
-            width: { ideal: 1280 },
-            height: { ideal: 720 },
-          },
-          audio: false,
-        });
-
-        setStream(mediaStream);
-
-        if (videoRef.current) {
-          videoRef.current.srcObject = mediaStream;
-        }
-      } catch (err) {
-        console.error("Error accessing camera:", err);
-        setError(
-          "Tidak dapat mengakses kamera. Pastikan Anda memberikan izin kamera."
-        );
-      } finally {
-        setIsLoading(false);
+      // Stop existing stream
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
       }
-    },
-    [stream]
-  );
+
+      console.log("Starting camera with facing mode:", facing);
+
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: {
+          facingMode: facing,
+          aspectRatio: { ideal: 1 },
+          width: { ideal: 1280 },
+        },
+        audio: false,
+      });
+
+      console.log("Camera stream obtained:", mediaStream.id);
+      streamRef.current = mediaStream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+        videoRef.current.onloadedmetadata = () => {
+          console.log("Video metadata loaded");
+          videoRef.current
+            ?.play()
+            .then(() => {
+              console.log("Video playing");
+              setIsCameraReady(true);
+              setIsLoading(false);
+            })
+            .catch((playError) => {
+              console.error("Video play error:", playError);
+              setIsLoading(false);
+            });
+        };
+      }
+    } catch (err) {
+      console.error("Error accessing camera:", err);
+      setError(
+        "Tidak dapat mengakses kamera. Pastikan Anda memberikan izin kamera."
+      );
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     startCamera(facingMode);
 
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      console.log("Cleaning up camera stream");
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
       }
     };
-  }, [facingMode, startCamera, stream]);
+  }, [facingMode, startCamera]);
 
   const switchCamera = () => {
     const newFacing = facingMode === "user" ? "environment" : "user";
@@ -77,6 +96,12 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
       const video = videoRef.current;
       const canvas = canvasRef.current;
 
+      console.log(
+        "Capturing photo, video dimensions:",
+        video.videoWidth,
+        video.videoHeight
+      );
+
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
 
@@ -84,6 +109,7 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
       if (ctx) {
         ctx.drawImage(video, 0, 0);
         const imageData = canvas.toDataURL("image/jpeg", 0.8);
+        console.log("[v0] Photo captured, data length:", imageData.length);
         setCapturedImage(imageData);
       }
     }
@@ -95,16 +121,16 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
 
   const confirmPhoto = () => {
     if (capturedImage) {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
       }
       onCapture(capturedImage);
     }
   };
 
   const handleClose = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop());
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
     }
     onClose();
   };
@@ -138,33 +164,36 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-foreground flex flex-col">
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-10 p-4 flex justify-between items-center bg-linear-to-b from-foreground/80 to-transparent">
+      <div className="absolute top-0 left-0 right-0 z-10 p-4 flex justify-between items-center bg-linear-to-b from-black/80 to-transparent">
         <Button
           variant="ghost"
           size="icon"
           onClick={handleClose}
-          className="rounded-full bg-background/20 text-background hover:bg-background/30"
+          className="rounded-full bg-white/20 text-white hover:bg-white/30"
         >
           <X className="w-5 h-5" />
         </Button>
-        <span className="text-background font-medium">Ambil Foto Sampah</span>
+        <span className="text-white font-medium">Ambil Foto Sampah</span>
         <Button
           variant="ghost"
           size="icon"
           onClick={switchCamera}
-          className="rounded-full bg-background/20 text-background hover:bg-background/30"
+          className="rounded-full bg-white/20 text-white hover:bg-white/30"
         >
-          <RotateCcw className="w-5 h-5" />
+          <SwitchCamera className="w-5 h-5" />
         </Button>
       </div>
 
       {/* Camera View */}
-      <div className="flex-1 relative overflow-hidden">
+      <div className="flex-1 relative overflow-hidden bg-black">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-foreground">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+            <div className="text-center space-y-4">
+              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+              <p className="text-white/70 text-sm">Memuat kamera...</p>
+            </div>
           </div>
         )}
 
@@ -181,16 +210,15 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
             playsInline
             muted
             className="w-full h-full object-cover"
-            onLoadedData={() => setIsLoading(false)}
           />
         )}
 
         <canvas ref={canvasRef} className="hidden" />
 
         {/* Viewfinder overlay */}
-        {!capturedImage && !isLoading && (
+        {!capturedImage && isCameraReady && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-72 h-72 border-2 border-background/50 rounded-2xl">
+            <div className="w-72 h-72 relative">
               <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary rounded-tl-xl" />
               <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary rounded-tr-xl" />
               <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary rounded-bl-xl" />
@@ -201,14 +229,14 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-0 left-0 right-0 p-6 pb-10 bg-linear-to-t from-foreground/80 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 p-6 pb-10 bg-linear-to-t from-black/80 to-transparent">
         {capturedImage ? (
           <div className="flex justify-center gap-6">
             <Button
               onClick={retakePhoto}
               variant="outline"
               size="lg"
-              className="rounded-full px-8 bg-background/20 border-background/30 text-background hover:bg-background/30"
+              className="rounded-full px-8 bg-white/20 border-white/30 text-white hover:bg-white/30"
             >
               <RotateCcw className="w-5 h-5 mr-2" />
               Ulangi
@@ -226,8 +254,8 @@ export function CameraCapture({ onCapture, onClose }: CameraCaptureProps) {
           <div className="flex justify-center">
             <button
               onClick={capturePhoto}
-              disabled={isLoading}
-              className="w-20 h-20 rounded-full bg-background flex items-center justify-center shadow-lg transition-transform active:scale-95 disabled:opacity-50"
+              disabled={!isCameraReady}
+              className="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-lg transition-transform active:scale-95 disabled:opacity-50"
             >
               <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
                 <Camera className="w-8 h-8 text-primary-foreground" />
