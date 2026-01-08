@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { WasteReport } from "@/components/waste-report";
+import Image from "next/image";
 
 export default function HomePage() {
   const [showReport, setShowReport] = useState(false);
@@ -34,10 +35,8 @@ export default function HomePage() {
         {/* Navigation */}
         <nav className="relative z-10 flex items-center justify-between p-4 md:p-6 max-w-6xl mx-auto">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold text-foreground">EcoReport</span>
+            <Image src="/Logo.png" alt="PPKC Logo" width={50} height={50} />
+            <span className="text-xl font-bold text-foreground">PPK-C</span>
           </div>
           <div className="hidden md:flex items-center gap-6 text-sm">
             <a
@@ -72,14 +71,14 @@ export default function HomePage() {
               </div>
 
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight text-balance">
-                Jaga Lingkungan,{" "}
-                <span className="text-primary">Laporkan Sampah</span> Menumpuk
+                Bersama Wujudkan{" "}
+                <span className="text-primary">Ciputat Bersih</span> dan
+                <span className="text-[#E27149]"> Berkelanjutan.</span>
               </h1>
 
               <p className="text-lg text-muted-foreground max-w-lg text-pretty">
-                Bersama-sama kita wujudkan lingkungan bersih. Laporkan lokasi
-                sampah menumpuk dengan mudah dan cepat menggunakan fitur foto
-                dan lokasi otomatis.
+                Platform digital untuk memilah, memantau, dan mengelola sampah
+                rumah tangga di wilayah Ciputat.
               </p>
 
               {/* CTA Button */}
