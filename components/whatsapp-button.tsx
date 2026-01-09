@@ -14,7 +14,7 @@ export function WhatsAppButton({ phoneNumber }: { phoneNumber: string }) {
     >
       <Button
         size={"icon-lg"}
-        className="fixed bottom-5 right-5 rounded-full p-4 shadow-lg flex items-center justify-center"
+        className="fixed bottom-5 right-5 rounded-full p-4 shadow-lg flex items-center justify-center z-50"
       >
         <Image src="/whatsapp.png" alt="WhatsApp" fill />
       </Button>
