@@ -22,6 +22,7 @@ import { ReportTable } from "@/components/report-table";
 import { ReportProvider } from "@/lib/report-context";
 import { PillarInfographic } from "@/components/pillar-infographic";
 import Image from "next/image";
+import Link from "next/link";
 
 function HomeContent() {
   const [showReport, setShowReport] = useState(false);
@@ -48,31 +49,15 @@ function HomeContent() {
             <Image src="/Logo.png" alt="PPK-C Logo" width={70} height={70} />
             <span className="text-xl font-bold text-foreground">PPK-C</span>
           </div>
-          <div className="hidden md:flex items-center gap-6 text-sm">
-            <a
-              href="#tentang"
-              className="text-muted-foreground hover:text-foreground transition-colors"
+          <div className="flex items-center gap-4">
+            <Link
+              href="/team"
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors font-medium text-sm"
             >
-              Tentang
-            </a>
-            <a
-              href="#pilar"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Pilar
-            </a>
-            <a
-              href="#laporan"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Laporan
-            </a>
-            <a
-              href="#tujuan"
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Tujuan
-            </a>
+              <Users className="w-4 h-4" />
+              <span className="hidden sm:inline">Profil Tim</span>
+              <span className="sm:hidden">Tim</span>
+            </Link>
           </div>
         </nav>
 
@@ -125,7 +110,7 @@ function HomeContent() {
                 {/* Main Card */}
                 <div className="absolute inset-4 bg-card rounded-3xl shadow-2xl border border-border overflow-hidden">
                   <img
-                    src="/clean-green-environment-recycling-illustration.jpg"
+                    src="/illustration.png"
                     alt="Ilustrasi lingkungan bersih Ciputat"
                     className="w-full h-full object-cover"
                   />
@@ -501,12 +486,6 @@ function HomeContent() {
               2025 PPK-C Ciputat. Bersama menjaga lingkungan untuk generasi
               mendatang.
             </p>
-            <div className="flex items-center gap-4">
-              <Users className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                Komunitas Peduli Lingkungan Ciputat
-              </span>
-            </div>
           </div>
         </div>
       </footer>
