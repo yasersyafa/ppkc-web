@@ -110,7 +110,7 @@ function PillarDetail({ pillar, onClose }: PillarDetailProps) {
   const data = details[pillar];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/50 backdrop-blur-sm">
+    <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-foreground/50 backdrop-blur-sm">
       <div className="bg-card rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className={cn("p-6 rounded-t-3xl", data.color)}>
           <div className="flex items-center justify-between">
