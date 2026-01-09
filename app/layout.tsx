@@ -1,26 +1,34 @@
+import type React from "react";
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Merriweather } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const _merriweather = Merriweather({
   subsets: ["latin"],
+  weight: ["300", "400", "700", "900"],
 });
 
-// const merriweather = Merriweather({
-//   variable: "--font-merriweather",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
 export const metadata: Metadata = {
-  title: "PPKC-Web",
+  title: "PPK-C - Pilah, Pantau, Kelola untuk Ciputat Lebih Hijau",
   description:
-    "Platform digital untuk memilah, memantau, dan mengelola sampahrumah tangga di wilayah Ciputat",
+    "Platform informasi dan ekosistem digital untuk pengelolaan sampah berkelanjutan di Ciputat",
+  icons: {
+    icon: [
+      {
+        url: "/icon-light-32x32.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-dark-32x32.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -29,8 +37,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} antialiased`}>{children}</body>
+    <html lang="id">
+      <body className={`font-sans antialiased`}>{children}</body>
     </html>
   );
 }
