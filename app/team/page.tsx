@@ -42,9 +42,7 @@ export default function TeamPage() {
         {/* Navigation */}
         <nav className="relative z-10 flex items-center justify-between p-4 md:p-6 max-w-6xl mx-auto">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Leaf className="w-6 h-6 text-primary-foreground" />
-            </div>
+            <Image src="/Logo.png" alt="PPK-C Logo" width={70} height={70} />
             <span className="text-xl font-bold text-foreground">PPK-C</span>
           </Link>
           <Link href="/">
