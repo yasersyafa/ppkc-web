@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Merriweather } from "next/font/google";
 import "./globals.css";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 
 const _merriweather = Merriweather({
   subsets: ["latin"],
@@ -33,7 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`font-sans antialiased`}>{children}</body>
+      <body className={`font-sans antialiased`}>
+        <WhatsAppButton phoneNumber="6281774963640" />
+        {children}
+      </body>
     </html>
   );
 }
