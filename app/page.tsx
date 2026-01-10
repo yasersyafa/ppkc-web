@@ -47,16 +47,22 @@ function HomeContent() {
               <Leaf className="w-6 h-6 text-primary-foreground" />
             </div> */}
             <Image src="/Logo.png" alt="PPK-C Logo" width={70} height={70} />
-            <span className="text-xl font-bold text-foreground">PPK-C</span>
+            <span className="text-xl font-bold text-foreground max-md:hidden">
+              PPK-C
+            </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
+            <Link
+              href="/solutions"
+              className="text-sm md:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Cara Mengelola Sampah
+            </Link>
             <Link
               href="/team"
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors font-medium text-sm"
+              className="text-sm md:text-base font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Profil Tim</span>
-              <span className="sm:hidden">Tim</span>
+              Profil Tim
             </Link>
           </div>
         </nav>
